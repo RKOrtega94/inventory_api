@@ -18,11 +18,11 @@ app.get("/:id", (req, res) => {
 app.post("/", (req, res) => {
   let body = req.body;
   console.log(body);
-  let result = createCategory(body);
-  res.send({
-    message: "category created successfully",
-    category: result,
-  });
+  createCategory(body)
+    .then((result) =>
+      res.send({ message: "Category created successfully", category: result })
+    )
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 app.put("/:id", (req, res) => {

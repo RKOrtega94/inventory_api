@@ -18,11 +18,14 @@ app.get("/:id", (req, res) => {
 app.post("/", (req, res) => {
   let body = req.body;
   console.log(body);
-  let result = createProduct(body);
-  res.send({
-    message: "Product created successfully",
-    product: result,
-  });
+  createProduct(body)
+    .then((result) =>
+      res.send({
+        message: "Product created successfully",
+        product: result,
+      })
+    )
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 app.put("/:id", (req, res) => {
@@ -50,6 +53,7 @@ async function createProduct(body) {
     price: body.price,
     description: body.description,
     image: body.image,
+    category: body.category,
   });
   return await product.save();
 }

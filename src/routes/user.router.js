@@ -17,30 +17,28 @@ app.get("/:id", (req, res) => {
 
 app.post("/", async (req, res) => {
   let body = req.body;
-  let result = await createUser(body);
-  res.send({
-    message: "User created successfully",
-    user: result,
-  });
+  await createUser(body)
+    .then((result) =>
+      res.send({ message: "User created successfully", user: result })
+    )
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 app.put("/:id", async (req, res) => {
   let id = req.params.id;
   let body = req.body;
-  let result = await updateUser(id, body);
-  res.send({
-    message: "User updated successfully",
-    user: result,
-  });
+  await updateUser(id, body)
+    .then((result) =>
+      res.send({ message: "User updated successfully", user: result })
+    )
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 app.delete("/:id", async (req, res) => {
   let id = req.params.id;
-  let result = await deleteUser(id);
-  res.send({
-    message: "User deleted successfully",
-    user: result,
-  });
+  await deleteUser(id)
+    .then((result) => res.send({ message: "User deleted", user: result }))
+    .catch((err) => res.status(400).json("Error: " + err));
 });
 
 async function createUser(body) {

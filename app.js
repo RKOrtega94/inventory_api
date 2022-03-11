@@ -8,6 +8,7 @@ const bodyParser = require("body-parser");
 const userRouter = require("./src/routes/user.router");
 const productRouter = require("./src/routes/product.router");
 const categoryRouter = require("./src/routes/category.router");
+const movementRouter = require("./src/routes/movement.router");
 
 // Initialize app
 const url = `mongodb+srv://${process.env.MONGODB_USER || "user"}:${
@@ -34,6 +35,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use("/api/users", userRouter);
 app.use("/api/products", productRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/movements", movementRouter);
 
 const port = process.env.PORT || 3000;
 
