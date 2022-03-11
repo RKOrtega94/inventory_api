@@ -51,7 +51,6 @@ async function createProduct(body) {
     description: body.description,
     image: body.image,
   });
-  console.log(product);
   return await product.save();
 }
 
