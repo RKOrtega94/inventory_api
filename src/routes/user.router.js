@@ -1,21 +1,21 @@
 const express = require("express");
 const User = require("../models/user.model");
 
-const router = express.Router();
+const app = express.Router();
 
-router.get("/", (req, res) => {
+app.get("/", (req, res) => {
   User.find()
     .then((users) => res.json(users))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.get("/:id", (req, res) => {
+app.get("/:id", (req, res) => {
   User.findById(req.params.id)
     .then((user) => res.json(user))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-router.post("/", async (req, res) => {
+app.post("/", async (req, res) => {
   let body = req.body;
   let result = await createUser(body);
   res.send({
@@ -24,7 +24,7 @@ router.post("/", async (req, res) => {
   });
 });
 
-router.put("/:id", async (req, res) => {
+app.put("/:id", async (req, res) => {
   let id = req.params.id;
   let body = req.body;
   let result = await updateUser(id, body);
@@ -34,7 +34,7 @@ router.put("/:id", async (req, res) => {
   });
 });
 
-router.delete("/:id", async (req, res) => {
+app.delete("/:id", async (req, res) => {
   let id = req.params.id;
   let result = await deleteUser(id);
   res.send({
@@ -62,4 +62,4 @@ async function deleteUser(id) {
   return user;
 }
 
-module.exports = router;
+module.exports = app;

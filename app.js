@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 
 // Declare routes
 const userRouter = require("./src/routes/user.router");
+const productRouter = require("./src/routes/product.router");
 
 // Initialize app
 const url = `mongodb+srv://${process.env.MONGODB_USER || "user"}:${
@@ -30,6 +31,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Routes
 app.use("/api/users", userRouter);
+app.use("/api/products", productRouter);
 
 const port = process.env.PORT || 3000;
 
