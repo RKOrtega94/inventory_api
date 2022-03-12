@@ -1,5 +1,6 @@
 const express = require("express");
 const Joi = require("joi");
+const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 
 const app = express.Router();
@@ -41,7 +42,7 @@ app.post("/", async (req, res, next) => {
   });
   let { value, error } = schema.validate(body);
   if (!error) {
-    await createUser(value)
+    createUser(value)
       .then((result) =>
         res.send({
           message: "User created successfully",
@@ -57,7 +58,7 @@ app.post("/", async (req, res, next) => {
 app.put("/:id", async (req, res) => {
   let id = req.params.id;
   let body = req.body;
-  await updateUser(id, body)
+  updateUser(id, body)
     .then((result) =>
       res.send({
         message: "User updated successfully",
@@ -69,7 +70,7 @@ app.put("/:id", async (req, res) => {
 
 app.delete("/:id", async (req, res) => {
   let id = req.params.id;
-  await deleteUser(id)
+  deleteUser(id)
     .then((result) =>
       res.send({
         message: "User deleted",
@@ -83,12 +84,14 @@ async function createUser(body) {
   let user = new User({
     name: body.name,
     email: body.email,
-    password: body.password,
+    password: bcrypt.hashSync(body.password, 10),
   });
   return await user.save();
 }
 
 async function updateUser(id, body) {
+  const password = bcrypt.hashSync(body.password, 10);
+  body.password = password;
   let user = await User.findByIdAndUpdate(id, body, { new: true });
   return user;
 }
