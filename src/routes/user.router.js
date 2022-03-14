@@ -3,6 +3,8 @@ const Joi = require("joi");
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
 
+const verifyToken = require("../middlewares/auth.middleware");
+
 const app = express.Router();
 
 const schema = Joi.object({
@@ -16,28 +18,28 @@ const schema = Joi.object({
   password: Joi.string().min(6).max(50).required(),
 });
 
-app.get("/", (req, res) => {
-  User.find()
+app.get("/", verifyToken, async (req, res) => {
+  await User.find()
     .select({ name: 1, email: 1, _id: 0 })
     .then((users) => res.json(users))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-app.get("/:id", (req, res) => {
-  User.findById(req.params.id)
+app.get("/:id", verifyToken, async (req, res) => {
+  await User.findById(req.params.id)
     .select({ name: 1, email: 1, _id: 0 })
     .then((user) => res.json(user))
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-app.post("/", async (req, res, next) => {
+app.post("/", verifyToken, async (req, res, next) => {
   let body = req.body;
-  User.findOne({ email: body.email }, (err, user) => {
+  await User.findOne({ email: body.email }, (err, user) => {
     if (err) {
-      res.status(400).json("Error: " + err);
+      return res.status(400).json("Error: " + err);
     }
     if (user) {
-      res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
   });
   let { value, error } = schema.validate(body);
@@ -51,11 +53,11 @@ app.post("/", async (req, res, next) => {
       )
       .catch((err) => res.status(400).json("Error: " + err));
   } else {
-    res.status(400).json(error);
+    return res.status(400).json(error);
   }
 });
 
-app.put("/:id", async (req, res) => {
+app.put("/:id", verifyToken, async (req, res) => {
   let id = req.params.id;
   let body = req.body;
   updateUser(id, body)
@@ -68,7 +70,7 @@ app.put("/:id", async (req, res) => {
     .catch((err) => res.status(400).json("Error: " + err));
 });
 
-app.delete("/:id", async (req, res) => {
+app.delete("/:id", verifyToken, async (req, res) => {
   let id = req.params.id;
   deleteUser(id)
     .then((result) =>
