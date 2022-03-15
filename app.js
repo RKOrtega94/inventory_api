@@ -39,7 +39,7 @@ app.use("/api/categories", categoryRouter);
 app.use("/api/movements", movementRouter);
 app.use("/api/auth", authRouter);
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
